@@ -7,7 +7,7 @@
 * Contributors:
 * 	Dr. David H. Akehurst
 *************************************************************************/
-package net.akehurst.transform.example.pojo.simpleRdbms;
+package net.akehurst.transform.example.simpleRdbms.pojo;
 
 public class Table {
 

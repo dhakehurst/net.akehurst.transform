@@ -24,14 +24,14 @@ public class AbstractTransformer implements Transformer {
 	
 	public void clear() {}
 	// --- Transformer ---
-	List<Class<? extends Relation>> ruleTypes = new Vector<Class<? extends Relation>>();
-	public List<Class<? extends Relation>> getRuleTypes() {
+	List<Class<? extends Relation<?,?>>> ruleTypes = new Vector<Class<? extends Relation<?,?>>>();
+	public List<Class<? extends Relation<?,?>>> getRuleTypes() {
 		if (this.ruleTypes == null) {
-			this.ruleTypes = new Vector<Class<? extends Relation>>();
+			this.ruleTypes = new Vector<Class<? extends Relation<?,?>>>();
 		}
 		return this.ruleTypes;
 	}
-	public void registerRule(Class<? extends Relation> ruleType) {
+	public void registerRule(Class<? extends Relation<?,?>> ruleType) {
 		getRuleTypes().add(ruleType);
 	}
 	List<Relation> getRules(Class<? extends Relation> ruleType, Object... constructorArgs) {
@@ -78,7 +78,7 @@ public class AbstractTransformer implements Transformer {
 		}
 		return right;
 	}
-	public <L,R> R transformLeft2Right(Class<? extends Relation<L,R>> ruleType, L left, Object... constructorArgs) {
+	public <L,R> R transformLeft2Right(Class<? extends Relation<L,R>> ruleType, L left, Object... constructorArgs) throws RelationNotFoundException {
 		try {
 			List<Relation> rules = getRules(ruleType, constructorArgs);
 			//might be better to do this as an follows, but needs assertions to be switched on
@@ -101,8 +101,8 @@ public class AbstractTransformer implements Transformer {
 		}
 		return null;
 	}
-	public <L,R> List<? extends R> transformAllLeft2Right(Class<? extends Relation> ruleType, List<? extends L> elements,
-			Object... constructorArgs) {
+	public <L,R> List<? extends R> transformAllLeft2Right(Class<? extends Relation<L,R>> ruleType, List<? extends L> elements,
+			Object... constructorArgs) throws RelationNotFoundException {
 		List<R> rights = new Vector<R>();
 		for (L left : elements) {
 			R o = transformLeft2Right(ruleType, left, constructorArgs);
@@ -110,14 +110,9 @@ public class AbstractTransformer implements Transformer {
 		}
 		return rights;
 	}
-	public Object transformLeft2Right(Object object, Object... constructorArgs) {
-		return transformLeft2Right(Relation.class, object, constructorArgs);
-	}
-	public List<? extends Object> transformAllLeft2Right(List<? extends Object> leftObjects, Object... constructorArgs) {
-		return transformAllLeft2Right(Relation.class, leftObjects, constructorArgs);
-	}
+
 	//--- right to left ---
-	Map<Class<? extends Relation>, Map<Object, Object>> mappingsRight2Left = new HashMap<Class<? extends Relation>, Map<Object, Object>>();
+	Map<Class<? extends Relation<?,?>>, Map<Object, Object>> mappingsRight2Left = new HashMap<Class<? extends Relation<?,?>>, Map<Object, Object>>();
 	<L,R> Map<R,L> getRuleMappingsRight2Left(Class<? extends Relation<L,R>> rule) {
 		Map<R,L> ruleMappings = (Map<R,L>) mappingsRight2Left.get(rule);
 		if (ruleMappings == null) {
@@ -142,7 +137,7 @@ public class AbstractTransformer implements Transformer {
 		}
 		return left;
 	}
-	public <L,R> L transformRight2Left(Class<? extends Relation> ruleClass, R right, Object... constructorArgs) {
+	public <L,R> L transformRight2Left(Class<? extends Relation<L,R>> ruleClass, R right, Object... constructorArgs) throws RelationNotFoundException {
 		try {
 			List<Relation> rules = getRules(ruleClass, constructorArgs);
 			//might be better to do this as an follows, but needs assertions to be switched on
@@ -165,8 +160,8 @@ public class AbstractTransformer implements Transformer {
 		}
 		return null;
 	}
-	public <L,R> List<? extends L> transformAllRight2Left(Class<? extends Relation> ruleClass, List<? extends R> rightObjects,
-			Object... constructorArgs) {
+	public <L,R> List<? extends L> transformAllRight2Left(Class<? extends Relation<L,R>> ruleClass, List<? extends R> rightObjects, Object...constructorArgs)throws RelationNotFoundException
+	{
 		List<L> leftObjects = new Vector<L>();
 		for (R right : rightObjects) {
 			L left = transformRight2Left(ruleClass, right, constructorArgs);
@@ -174,10 +169,5 @@ public class AbstractTransformer implements Transformer {
 		}
 		return leftObjects;
 	}
-	public Object transformRight2Left(Object right, Object... constructorArgs) {
-		return transformRight2Left(Relation.class, right, constructorArgs);
-	}
-	public List<? extends Object> transformAllRight2Left(List<? extends Object> rightObjects, Object... constructorArgs) {
-		return transformAllRight2Left(Relation.class, rightObjects, constructorArgs);
-	}
+
 }
