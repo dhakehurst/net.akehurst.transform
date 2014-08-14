@@ -13,60 +13,65 @@
 package net.akehurst.transform.simple;
 
 	import java.lang.reflect.Constructor;
-	import java.lang.reflect.InvocationTargetException;
 	import java.lang.reflect.Modifier;
 	import java.util.HashMap;
 	import java.util.List;
 	import java.util.Map;
 	import java.util.Vector;
-
+	
 	import net.akehurst.reflect.BetterMethodFinder;
 
 	public class AbstractTransformer implements Transformer {
+		
 		public AbstractTransformer() {
-			
 		}
 		
 		public 	void clear() {
 			mappings.clear();
 		}
 		
-		Map<Class<? extends Relation>, Map<Object, Object>> mappings = new HashMap<Class<? extends Relation>, Map<Object, Object>>();
+		Map<Class<? extends Relation<?,?>>, Map<?,?>> mappings = new HashMap<Class<? extends Relation<?,?>>, Map<?,?>>();
 		<S, T> Map<S, T> getRuleMappings(Class<? extends Relation<S, T>> rule) {
 			Map<S, T> ruleMappings = (Map<S, T>) mappings.get(rule);
 			if (ruleMappings == null) {
 				ruleMappings = new HashMap<S, T>();
-				mappings.put(rule, (Map<Object, Object>) ruleMappings);
+				mappings.put(rule, (Map<?,?>) ruleMappings);
 			}
 			return ruleMappings;
 		}
+
 		<S, T> void recordMaping(Class<? extends Relation<S, T>> rule, S source, T target) {
 			getRuleMappings(rule).put(source, target);
 		}
+
 		public <S, T> T getExistingTargetFor(Class<? extends Relation<S, T>> rule, S source) {
 			return getRuleMappings(rule).get(source);
 		}
-		<S, T> T applyRule(Relation<S, T> r, S source) {
+
+		<S, T> T applyRule(Relation<S, T> r, S source) throws RelationNotFoundException {
 			Class<? extends Relation<S, T>> ruleType = (Class<? extends Relation<S, T>>) r.getClass();
 			T target = getExistingTargetFor(ruleType, source);
 			if (target == null) {
-				target = r.construct(source, this);
-				recordMaping(ruleType, source, target);
-				r.configure(source, target, this);
+				target = r.construct(source, this); //may throw RelationNotFoundException
+				this.recordMaping(ruleType, source, target);
+				r.configure(source, target, this); //may throw RelationNotFoundException
 			}
 			return target;
 		}
 		// --- Transformer ---
-		List<Class<? extends Relation>> ruleTypes = new Vector<Class<? extends Relation>>();
-		public List<Class<? extends Relation>> getRuleTypes() {
+		List<Class<? extends Relation<?,?>>> ruleTypes = new Vector<Class<? extends Relation<?,?>>>();
+
+		public List<Class<? extends Relation<?,?>>> getRuleTypes() {
 			if (this.ruleTypes == null) {
-				this.ruleTypes = new Vector<Class<? extends Relation>>();
+				this.ruleTypes = new Vector<Class<? extends Relation<?,?>>>();
 			}
 			return this.ruleTypes;
 		}
-		public void addRuleType(Class<? extends Relation> ruleType) {
+	
+		public <S,T> void addRuleType(Class<? extends Relation<S,T>> ruleType) {
 			getRuleTypes().add(ruleType);
 		}
+
 		List<Relation> getRules(Class<? extends Relation> ruleType, Object... constructorArgs) {
 			List<Relation> rules = new Vector<Relation>();
 			for (Class<? extends Relation> rt : getRuleTypes()) {
@@ -85,30 +90,32 @@ package net.akehurst.transform.simple;
 			}
 			return rules;
 		}
-		public <S, T> T transform(Class<? extends Relation> ruleType, S source, Object... constructorArgs) {
-			try {
+
+		public <S, T> T transform(Class<? extends Relation> ruleType, S source, Object... constructorArgs) throws RelationNotFoundException {
 				List<Relation> rules = getRules(ruleType, constructorArgs);
-				//might be better to do this as an follows, but needs assertions to be switched on
-				assert !rules.isEmpty() : "No rule " + ruleType + " found in transformer " + this;
 				if (rules.isEmpty()) {
-					System.err.println("No rule " + ruleType + " found in transformer " + this);
+					throw new RelationNotFoundException("No relation " + ruleType + " found in transformer " + this);
 				} else {
+					int exceptionCount = 0;
 					for (Relation rule : rules) {
 						Boolean b = false;
 						try {
 							b = rule.isValidFor(source);
-						} catch (ClassCastException e) {}
+						} catch (ClassCastException e) {
+							++exceptionCount;
+						}
 						if (b) {
 							return applyRule((Relation<S, T>) rule, source);
 						}
+						if (exceptionCount == rules.size()) {
+							throw new RelationNotFoundException("No relation " + ruleType + " found that is appicable to " + source);
+						}
 					}
 				}
-			} catch (Throwable t) {
-				t.printStackTrace();
-			}
 			return null;
 		}
-		public <S, T> List<? extends T> transformAll(Class<? extends Relation> ruleType, List<? extends S> element, Object... constructorArgs) {
+
+		public <S, T> List<? extends T> transformAll(Class<? extends Relation> ruleType, List<? extends S> element, Object... constructorArgs) throws RelationNotFoundException {
 			List<T> targets = new Vector<T>();
 			for (S s : element) {
 				T o = transform(ruleType, s, constructorArgs);
@@ -116,10 +123,12 @@ package net.akehurst.transform.simple;
 			}
 			return targets;
 		}
-		public Object transform(Object object, Object... constructorArgs) {
+
+		public Object transform(Object object, Object... constructorArgs) throws RelationNotFoundException {
 			return transform(Relation.class, object, constructorArgs);
 		}
-		public List<? extends Object> transformAll(List<? extends Object> sourceObjects, Object... constructorArgs) {
+
+		public List<? extends Object> transformAll(List<? extends Object> sourceObjects, Object... constructorArgs) throws RelationNotFoundException {
 			return transformAll(Relation.class, sourceObjects, constructorArgs);
 		}
 	}
