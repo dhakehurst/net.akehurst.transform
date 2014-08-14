@@ -4,4 +4,4 @@ Bundle-Name: Binary Transform
 Bundle-SymbolicName: net.akehurst.transform.binary
 Bundle-Version: 1.0.0.qualifier
 Export-Package: net.akehurst.transform.binary
-Require-Bundle: net.akehurst.reflect
+Require-Bundle: net.akehurst.reflect;bundle-version="1.0.0"

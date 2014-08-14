@@ -5,4 +5,4 @@ Bundle-SymbolicName: net.akehurst.transform.simple
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: net.akehurst.transform.simple
-Require-Bundle: net.akehurst.reflect
+Require-Bundle: net.akehurst.reflect;bundle-version="1.0.0"
