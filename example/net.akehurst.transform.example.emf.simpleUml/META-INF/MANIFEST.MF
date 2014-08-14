@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: net.akehurst.transform.example.emf.simpleUml;singleton:=true
+Bundle-SymbolicName: net.akehurst.transform.example.simpleUml.emf;singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName

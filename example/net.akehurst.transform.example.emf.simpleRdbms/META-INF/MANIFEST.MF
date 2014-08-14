@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %pluginName
-Bundle-SymbolicName: net.akehurst.transform.example.emf.simpleRdbms;singleton:=true
+Bundle-SymbolicName: net.akehurst.transform.example.simpleRdbms.emf;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: .
 Bundle-Vendor: %providerName
