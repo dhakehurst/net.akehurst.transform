@@ -7,9 +7,9 @@
 * Contributors:
 * 	Dr. David H. Akehurst
 *************************************************************************/
-package net.akehurst.transform.example.simpleRdbms.pojo;
+package simpleRdbms;
 
-public class Schema {
+public class Column {
 
 	String name;
 	public String getName() {
@@ -19,12 +19,12 @@ public class Schema {
 		this.name = name;
 	}
 	
-	java.util.Set<Table> table = new java.util.HashSet<Table>();
-	public java.util.Set<Table> getTable() {
-		return table;
+	String type;
+	public String getType() {
+		return type;
 	}
-	public void setTable(java.util.Set<Table> table) {
-		this.table = table;
+	public void setType(String type) {
+		this.type = type;
 	}
-	
+
 }

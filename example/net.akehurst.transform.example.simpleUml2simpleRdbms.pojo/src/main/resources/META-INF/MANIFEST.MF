@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Pojo
+Bundle-SymbolicName: net.akehurst.transform.example.simpleUml2simpleRdbms.pojo
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.junit,
+ net.akehurst.transform.binary;bundle-version="1.0.0",
+ net.akehurst.transform.example.simpleUml.pojo;bundle-version="1.0.0",
+ net.akehurst.transform.example.simpleRdbms.pojo;bundle-version="1.0.0"

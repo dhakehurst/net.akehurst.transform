@@ -7,7 +7,7 @@
 * Contributors:
 * 	Dr. David H. Akehurst
 *************************************************************************/
-package net.akehurst.transform.example.simpleRdbms.pojo;
+package simpleRdbms;
 
 public class FKey {
 
