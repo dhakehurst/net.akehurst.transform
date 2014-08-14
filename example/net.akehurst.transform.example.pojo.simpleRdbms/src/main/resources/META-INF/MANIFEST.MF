@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SimpleRdbms POJO
-Bundle-SymbolicName: net.akehurst.transform.example.pojo.simpleRdbms
+Bundle-SymbolicName: net.akehurst.transform.example.simpleRdbms.pojo
 Bundle-Version: 1.0.0.qualifier
-Export-Package: net.akehurst.transform.example.pojo.simpleRdbms
+Export-Package: simpleRdbms

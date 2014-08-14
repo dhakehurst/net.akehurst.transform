@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>net.akehurst.transform.example</groupId>
-  <artifactId>net.akehurst.transform.example.pojo.simpleRdbms</artifactId>
+  <artifactId>net.akehurst.transform.example.simpleRdbms.pojo</artifactId>
   <version>1.0.0.qualifier</version>
   
   <packaging>jar</packaging>
