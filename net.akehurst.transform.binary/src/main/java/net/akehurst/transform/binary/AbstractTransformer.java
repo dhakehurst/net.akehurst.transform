@@ -19,9 +19,9 @@ import java.util.Vector;
 import net.akehurst.reflect.BetterMethodFinder;
 
 public class AbstractTransformer implements Transformer {
-	public AbstractTransformer(List<Class<? extends Relation>> ruleTypes) {
-		this.ruleTypes = ruleTypes;
+	public AbstractTransformer() {
 	}
+	
 	public void clear() {}
 	// --- Transformer ---
 	List<Class<? extends Relation>> ruleTypes = new Vector<Class<? extends Relation>>();
@@ -78,7 +78,7 @@ public class AbstractTransformer implements Transformer {
 		}
 		return right;
 	}
-	public <L,R> R transformLeft2Right(Class<? extends Relation> ruleType, L left, Object... constructorArgs) {
+	public <L,R> R transformLeft2Right(Class<? extends Relation<L,R>> ruleType, L left, Object... constructorArgs) {
 		try {
 			List<Relation> rules = getRules(ruleType, constructorArgs);
 			//might be better to do this as an follows, but needs assertions to be switched on

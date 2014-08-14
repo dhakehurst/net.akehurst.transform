@@ -13,19 +13,14 @@ import java.util.List;
 
 public interface Transformer {
 	
-	Object transformLeft2Right(Object left, Object...constructorArgs);
-	List<? extends Object> transformAllLeft2Right(List<? extends Object> leftObjects, Object...constructorArgs);
+	<L, R, OL extends L, OR extends R> OR transformLeft2Right(Class<? extends Relation<L,R>> ruleClass, OL left, Object...constructorArgs)throws RelationNotFoundException;
+	<L, R> List<? extends R> transformAllLeft2Right(Class<? extends Relation<L,R>> ruleClass, List<? extends L> leftObjects, Object...constructorArgs)throws RelationNotFoundException;
 	
-	<L, R> R transformLeft2Right(Class<? extends Relation> ruleClass, L left, Object...constructorArgs);
-	<L, R> List<? extends R> transformAllLeft2Right(Class<? extends Relation> ruleClass, List<? extends L> leftObjects, Object...constructorArgs);
-	
-	Object transformRight2Left(Object right, Object...constructorArgs);
-	List<? extends Object> transformAllRight2Left(List<? extends Object> rightObjects, Object...constructorArgs);
-	<L, R> L transformRight2Left(Class<? extends Relation> ruleClass, R right, Object...constructorArgs);
-	<L, R> List<? extends L> transformAllRight2Left(Class<? extends Relation> ruleClass, List<? extends R> rightObjects, Object...constructorArgs);
+	<L, R> L transformRight2Left(Class<? extends Relation<L,R>> ruleClass, R right, Object...constructorArgs) throws RelationNotFoundException;
+	<L, R> List<? extends L> transformAllRight2Left(Class<? extends Relation<L,R>> ruleClass, List<? extends R> rightObjects, Object...constructorArgs)throws RelationNotFoundException;
 
 	void clear();
-	List<Class<? extends Relation>> getRuleTypes();
-	void registerRule(Class<? extends Relation> ruleType);
+	List<Class<? extends Relation<?,?>>> getRuleTypes();
+	void registerRule(Class<? extends Relation<?,?>> ruleType);
 
 }

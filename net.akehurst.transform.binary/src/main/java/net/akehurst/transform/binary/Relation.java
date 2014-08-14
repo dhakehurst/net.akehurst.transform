@@ -17,6 +17,6 @@ public interface Relation<L, R> {
 	R constructLeft2Right(L left, Transformer transformer);
 	L constructRight2Left(R right, Transformer transformer);
 
-	R configureLeft2Right(L left, R right, Transformer transformer);
-	L configureRight2Left(L left, R right, Transformer transformer);
+	void configureLeft2Right(L left, R right, Transformer transformer);
+	void configureRight2Left(L left, R right, Transformer transformer);
 }
