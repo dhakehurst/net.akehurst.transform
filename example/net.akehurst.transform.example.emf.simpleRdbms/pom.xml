@@ -1,0 +1,84 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<packaging>jar</packaging>
+
+	<groupId>net.akehurst.transformation.example</groupId>
+	<artifactId>net.akehurst.transformation.example.model.simpleRdbms</artifactId>
+	<version>1.0.0.qualifier</version>
+
+	<properties>
+		<tycho-version>0.20.0</tycho-version>
+		<emf-model>${basedir}/model/simpleRdbms.genmodel</emf-model>
+		<emf-gen-src>${project.build.directory}/emf-gen</emf-gen-src>
+	</properties>
+
+	<repositories>
+		<!-- configure p2 repository to resolve against -->
+		<repository>
+			<id>eclipse-project-luna</id>
+			<layout>p2</layout>
+			<url>http://download.eclipse.org/releases/luna</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.eclipse.emf</groupId>
+			<artifactId>org.eclipse.emf.ecore</artifactId>
+			<version>[2.10.0,)</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>${emf-gen-src}</sourceDirectory>
+	
+		<plugins>
+
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-eclipserun-plugin</artifactId>
+				<!-- tested with 0.18 -->
+				<version>${tycho-version}</version>
+				<configuration>
+					<!-- linebreaks not permitted in this arg line -->
+					<appArgLine>-data target/workspace -application org.eclipse.emf.codegen.ecore.Generator -projects ${basedir} -model ${emf-model} ${emf-gen-src}</appArgLine>
+					<dependencies>
+						<dependency>
+							<artifactId>org.eclipse.emf.codegen.ecore</artifactId>
+							<type>eclipse-plugin</type>
+						</dependency>
+					</dependencies>
+					<repositories>
+						<!-- configure p2 repository to resolve against -->
+						<repository>
+							<id>eclipse-project-luna</id>
+							<layout>p2</layout>
+							<url>http://download.eclipse.org/releases/luna</url>
+						</repository>
+					</repositories>
+				</configuration>
+
+				<executions>
+					<execution>
+						<goals>
+							<goal>eclipse-run</goal>
+						</goals>
+						<phase>generate-sources</phase>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
