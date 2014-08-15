@@ -2,8 +2,8 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>net.akehurst.transform.example</groupId>
-  <artifactId>net.akehurst.transform.example.simpleUml.pojo</artifactId>
-  <version>1.0.0.qualifier</version>
+  <artifactId>net.akehurst.transform.example.pojo.simpleUml</artifactId>
+  <version>1.0.0</version>
   
   <packaging>jar</packaging>
   
