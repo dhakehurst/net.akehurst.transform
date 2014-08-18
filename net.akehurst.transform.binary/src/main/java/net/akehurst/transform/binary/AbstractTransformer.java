@@ -79,25 +79,25 @@ public class AbstractTransformer implements Transformer {
 		return right;
 	}
 	public <L,R> R transformLeft2Right(Class<? extends Relation<L,R>> ruleType, L left, Object... constructorArgs) throws RelationNotFoundException {
-		try {
-			List<Relation> rules = getRules(ruleType, constructorArgs);
-			//might be better to do this as an follows, but needs assertions to be switched on
-			assert !rules.isEmpty() : "No rule " + ruleType + " found in transformer " + this;
-			if (rules.isEmpty()) {
-				System.err.println("No rule " + ruleType + " found in transformer " + this);
-			} else {
-				for (Relation rule : rules) {
-					Boolean b = false;
-					try {
-						b = rule.isValidForLeft2Right(left);
-					} catch (ClassCastException e) {}
-					if (b) {
-						return applyRuleLeft2Right((Relation<L,R>) rule, left);
-					}
+		List<Relation> rules = getRules(ruleType, constructorArgs);
+		if (rules.isEmpty()) {
+			throw new RelationNotFoundException("No relation " + ruleType + " found in transformer " + this);
+		} else {
+			int exceptionCount = 0;
+			for (Relation rule : rules) {
+				Boolean b = false;
+				try {
+					b = rule.isValidForLeft2Right(left);
+				} catch (ClassCastException e) {
+					++exceptionCount;
+				}
+				if (b) {
+					return applyRuleLeft2Right((Relation<L,R>) rule, left);
+				}
+				if (exceptionCount == rules.size()) {
+					throw new RelationNotFoundException("No relation " + ruleType + " found that is appicable to " + left);
 				}
 			}
-		} catch (Throwable t) {
-			t.printStackTrace();
 		}
 		return null;
 	}
@@ -137,26 +137,26 @@ public class AbstractTransformer implements Transformer {
 		}
 		return left;
 	}
-	public <L,R> L transformRight2Left(Class<? extends Relation<L,R>> ruleClass, R right, Object... constructorArgs) throws RelationNotFoundException {
-		try {
-			List<Relation> rules = getRules(ruleClass, constructorArgs);
-			//might be better to do this as an follows, but needs assertions to be switched on
-			assert !rules.isEmpty() : "No rule " + ruleClass + " found in transformer " + this;
-			if (rules.isEmpty()) {
-				System.err.println("No rule " + ruleClass + " found in transformer " + this);
-			} else {
-				for (Relation rule : rules) {
-					Boolean b = false;
-					try {
-						b = rule.isValidForRight2Left(right);
-					} catch (ClassCastException e) {}
-					if (b) {
-						return applyRuleRight2Left((Relation<L,R>) rule, right);
-					}
+	public <L,R> L transformRight2Left(Class<? extends Relation<L,R>> ruleType, R right, Object... constructorArgs) throws RelationNotFoundException {
+		List<Relation> rules = getRules(ruleType, constructorArgs);
+		if (rules.isEmpty()) {
+			throw new RelationNotFoundException("No relation " + ruleType + " found in transformer " + this);
+		} else {
+			int exceptionCount = 0;
+			for (Relation rule : rules) {
+				Boolean b = false;
+				try {
+					b = rule.isValidForRight2Left(right);
+				} catch (ClassCastException e) {
+					++exceptionCount;
+				}
+				if (b) {
+					return applyRuleRight2Left((Relation<L,R>) rule, right);
+				}
+				if (exceptionCount == rules.size()) {
+					throw new RelationNotFoundException("No relation " + ruleType + " found that is appicable to " + right);
 				}
 			}
-		} catch (Throwable t) {
-			t.printStackTrace();
 		}
 		return null;
 	}
