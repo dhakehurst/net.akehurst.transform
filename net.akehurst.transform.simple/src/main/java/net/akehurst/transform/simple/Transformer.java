@@ -17,10 +17,7 @@ import java.util.List;
 public interface Transformer {
 
 	
-	<S, T> T transform(Class<? extends Relation> ruleType, S source, Object... constructorArgs) throws RelationNotFoundException;
-	<S, T> List<? extends T> transformAll(Class<? extends Relation> ruleType, List<? extends S> element, Object... constructorArgs) throws RelationNotFoundException;
-	
-	Object transform(Object object, Object... constructorArgs) throws RelationNotFoundException;
-	List<? extends Object> transformAll(List<? extends Object> sourceObjects, Object... constructorArgs) throws RelationNotFoundException;
+	<S, T> T transform(Class<? extends Relation> ruleType, S source) throws RelationNotFoundException;
+	<S, T> List<? extends T> transformAll(Class<? extends Relation> ruleType, List<? extends S> element) throws RelationNotFoundException;
 	
 }

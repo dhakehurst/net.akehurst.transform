@@ -19,8 +19,6 @@ package net.akehurst.transform.simple;
 	import java.util.Map;
 	import java.util.Vector;
 	
-	import net.akehurst.reflect.BetterMethodFinder;
-
 	public class AbstractTransformer implements Transformer {
 		
 		public AbstractTransformer() {
@@ -72,15 +70,14 @@ package net.akehurst.transform.simple;
 			getRuleTypes().add(ruleType);
 		}
 
-		List<Relation> getRules(Class<? extends Relation> ruleType, Object... constructorArgs) {
+		List<Relation> getRules(Class<? extends Relation> ruleType) {
 			List<Relation> rules = new Vector<Relation>();
 			for (Class<? extends Relation> rt : getRuleTypes()) {
 				if (ruleType.isAssignableFrom(rt)) {
 					if (!Modifier.isAbstract(rt.getModifiers())) {
 						try {
-							BetterMethodFinder bmf = new BetterMethodFinder(rt);
-							Constructor<Relation> cons = bmf.findConstructor(constructorArgs);
-							Relation r = cons.newInstance(constructorArgs);
+							Constructor<? extends Relation> cons = ruleType.getConstructor(new Class<?>[0]);
+							Relation r = cons.newInstance();
 							rules.add(r);
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -91,8 +88,8 @@ package net.akehurst.transform.simple;
 			return rules;
 		}
 
-		public <S, T> T transform(Class<? extends Relation> ruleType, S source, Object... constructorArgs) throws RelationNotFoundException {
-				List<Relation> rules = getRules(ruleType, constructorArgs);
+		public <S, T> T transform(Class<? extends Relation> ruleType, S source) throws RelationNotFoundException {
+				List<Relation> rules = getRules(ruleType);
 				if (rules.isEmpty()) {
 					throw new RelationNotFoundException("No relation " + ruleType + " found in transformer " + this);
 				} else {
@@ -115,20 +112,13 @@ package net.akehurst.transform.simple;
 			return null;
 		}
 
-		public <S, T> List<? extends T> transformAll(Class<? extends Relation> ruleType, List<? extends S> element, Object... constructorArgs) throws RelationNotFoundException {
+		public <S, T> List<? extends T> transformAll(Class<? extends Relation> ruleType, List<? extends S> element) throws RelationNotFoundException {
 			List<T> targets = new Vector<T>();
 			for (S s : element) {
-				T o = transform(ruleType, s, constructorArgs);
+				T o = transform(ruleType, s);
 				targets.add(o);
 			}
 			return targets;
 		}
 
-		public Object transform(Object object, Object... constructorArgs) throws RelationNotFoundException {
-			return transform(Relation.class, object, constructorArgs);
-		}
-
-		public List<? extends Object> transformAll(List<? extends Object> sourceObjects, Object... constructorArgs) throws RelationNotFoundException {
-			return transformAll(Relation.class, sourceObjects, constructorArgs);
-		}
 	}
