@@ -40,10 +40,15 @@ public class AbstractTransformer implements Transformer {
 			if (ruleType.isAssignableFrom(rt)) {
 				if (!Modifier.isAbstract(rt.getModifiers())) {
 					try {
-						BetterMethodFinder bmf = new BetterMethodFinder(rt);
-						Constructor<Relation> cons = bmf.findConstructor(constructorArgs);
-						Relation r = cons.newInstance(constructorArgs);
-						rules.add(r);
+						if (constructorArgs.length == 0) {
+							Relation r = ruleType.newInstance();
+							rules.add(r);
+						} else {
+							BetterMethodFinder bmf = new BetterMethodFinder(rt);
+							Constructor<Relation> cons = bmf.findConstructor(constructorArgs);
+							Relation r = cons.newInstance(constructorArgs);
+							rules.add(r);
+						}
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
