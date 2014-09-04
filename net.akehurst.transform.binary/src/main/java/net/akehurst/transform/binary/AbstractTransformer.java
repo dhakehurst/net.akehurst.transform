@@ -41,7 +41,7 @@ public class AbstractTransformer implements Transformer {
 				if (!Modifier.isAbstract(rt.getModifiers())) {
 					try {
 						if (constructorArgs.length == 0) {
-							Relation r = ruleType.newInstance();
+							Relation r = rt.newInstance();
 							rules.add(r);
 						} else {
 							BetterMethodFinder bmf = new BetterMethodFinder(rt);
@@ -50,7 +50,7 @@ public class AbstractTransformer implements Transformer {
 							rules.add(r);
 						}
 					} catch (Exception e) {
-						e.printStackTrace();
+						//don't add the rule
 					}
 				}
 			}
