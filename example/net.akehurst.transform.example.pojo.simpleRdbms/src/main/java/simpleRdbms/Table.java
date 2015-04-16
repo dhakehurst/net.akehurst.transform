@@ -19,6 +19,10 @@ public class Table {
 		this.name = name;
 	}
 	
+	Schema schema;
+	public Schema getSchema() { return this.schema; }
+	public void putSchema(Schema value) { this.schema = value; }
+	
 	java.util.Set<Column> pkey = new java.util.HashSet<Column>();
 	public java.util.Set<Column> getPkey() {
 		return pkey;

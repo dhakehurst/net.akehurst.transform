@@ -19,12 +19,17 @@ public class Schema {
 		this.name = name;
 	}
 	
-	java.util.Set<Table> table = new java.util.HashSet<Table>();
-	public java.util.Set<Table> getTable() {
-		return table;
+	java.util.Set<Table> tables = new java.util.HashSet<Table>();
+	public java.util.Set<Table> getTables() {
+		return tables;
 	}
-	public void setTable(java.util.Set<Table> table) {
-		this.table = table;
+	public void setTables(java.util.Set<Table> value) {
+		this.tables = value;
 	}
 	
+	@Override
+	public String toString() {
+		return "Schema { name='"+this.getName()+"' }";
+	}
+
 }

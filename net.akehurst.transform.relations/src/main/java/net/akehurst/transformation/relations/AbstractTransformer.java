@@ -110,7 +110,9 @@ public abstract class AbstractTransformer implements Transformer {
 						newProduct.add(newTuple);
 					}
 				}
-				product = newProduct;
+				if ( !newProduct.isEmpty()) { //may be empty if domains.get(sourceDomain) was empty
+					product = newProduct;
+				}
 			}
 		}
 
@@ -213,41 +215,50 @@ public abstract class AbstractTransformer implements Transformer {
 		throw new RelationNotApplicableException("Relation " + relationType.getName() + " not applicable to any of the possible objects");
 	}
 
-	public boolean check(DomainModelItentifier targetDomain, Map<DomainModelItentifier, Iterable<?>> domains) {
+	public boolean check(DomainModelItentifier targetDomain, Map<DomainModelItentifier, Iterable<?>> domains) throws RelationNotValidException {
 		boolean result = true;
 
 		List<Class<? extends Relation>> relations = this.getTopRelationType();
 		// for each top relation there must be a match for each object in targetDomain
-		Iterable<?> targetObjects = domains.get(targetDomain);
-
+		//Iterable<?> targetObjects = domains.get(targetDomain);
+		Iterable<Map<DomainModelItentifier, Object>> options = this.createAlternatives(domains);
+		
 		for (Class<? extends Relation> relationType : relations) {
 
-			for (Object targetObject : targetObjects) {
+//			for (Object targetObject : targetObjects) {
 				try {
-
-					Map<DomainModelItentifier, Iterable<?>> domains2 = new HashMap<DomainModelItentifier, Iterable<?>>(domains);
-					domains2.put(targetDomain, Arrays.asList(targetObject));
-
-					Relation match = this.findMatch(targetDomain, relationType, domains2);
-					if (null != match) {
-						// Object d2Obj = match.getDomainVariable(targetDomain);
-						// if (null == d2Obj) {
-						// // check failed so fail fast
-						// return false;
-						// }
-					} else {
-						return false;
+					for (Map<DomainModelItentifier, Object> domainArgs : options) {
+						Relation relation = this.getRelation(relationType, domainArgs);
+						if (relation.when(targetDomain)) {
+							if (this.checkMatch(targetDomain, relation)) {
+								// all OK
+							} else {
+								//fail fast
+								return false;
+							}
+							
+						}
 					}
+//					Map<DomainModelItentifier, Iterable<?>> domains2 = new HashMap<DomainModelItentifier, Iterable<?>>(domains);
+//					domains2.put(targetDomain, Arrays.asList(targetObject));
 
-				} catch (RelationNotValidException e) {
-					// TODO Auto-generated catch block
+//					Relation match = this.findMatch(targetDomain, relationType, domains);
+//					if (null != match) {
+//						// Object d2Obj = match.getDomainVariable(targetDomain);
+//						// if (null == d2Obj) {
+//						// // check failed so fail fast
+//						// return false;
+//						// }
+//					} else {
+//						return false;
+//					}
 
 				} catch (RelationNotApplicableException e) {
 					// must be an applicable option for each top relation
 					return false;
 				}
 
-			}
+	//		}
 
 		}
 
@@ -263,17 +274,18 @@ public abstract class AbstractTransformer implements Transformer {
 
 		List<Class<? extends Relation>> relations = this.getTopRelationType();
 		// for each top relation there must be a match for each object in targetDomain
-		Iterable<?> targetObjects = domains.get(targetDomain);
+//		Iterable<?> targetObjects = domains.get(targetDomain);
+
+		Iterable<Map<DomainModelItentifier, Object>> options = this.createAlternatives(domains);
 
 		for (Class<? extends Relation> relationType : relations) {
 
-			// for each top relation there must be a match for each object in target
-			for (Object targetObject : targetObjects) {
+//			// for each top relation there must be a match for each object in target
+//			for (Object targetObject : targetObjects) {
+//
+//				Map<DomainModelItentifier, Iterable<?>> domains2 = new HashMap<DomainModelItentifier, Iterable<?>>(domains);
+//				domains2.put(targetDomain, Arrays.asList(targetObject));
 
-				Map<DomainModelItentifier, Iterable<?>> domains2 = new HashMap<DomainModelItentifier, Iterable<?>>(domains);
-				domains2.put(targetDomain, Arrays.asList(targetObject));
-
-				Iterable<Map<DomainModelItentifier, Object>> options = this.createAlternatives(domains2);
 				boolean foundRelation = false;
 				for (Map<DomainModelItentifier, Object> domainArgs : options) {
 					try {
@@ -302,7 +314,7 @@ public abstract class AbstractTransformer implements Transformer {
 				}
 			}
 
-		}
+	//	}
 		// }
 
 		return newDomainObjects;

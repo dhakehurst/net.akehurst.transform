@@ -1,5 +1,5 @@
 package simpleUml;
 
-public class Classifier extends UMLModelElement {
+public class Classifier extends PackageElement {
 
 }

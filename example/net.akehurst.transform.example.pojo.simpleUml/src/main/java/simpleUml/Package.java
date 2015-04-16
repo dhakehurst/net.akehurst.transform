@@ -4,11 +4,16 @@ import java.util.List;
 
 public class Package extends UMLModelElement {
 
-	List<PackageElement> element;
-	public List<PackageElement> getElement() {
-		return element;
+	List<PackageElement> elements;
+	public List<PackageElement> getElements() {
+		return elements;
 	}
-	public void setElement(List<PackageElement> element) {
-		this.element = element;
+	public void setElements(List<PackageElement> element) {
+		this.elements = element;
+	}
+	
+	@Override
+	public String toString() {
+		return "Package { name='"+this.getName()+"' }";
 	}
 }
