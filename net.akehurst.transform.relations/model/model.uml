@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Model xmi:version="20131001" xmlns:xmi="http://www.omg.org/spec/XMI/20131001" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_FUWZYANPEeSiqeR6AQH_Pg" name="model">
+  <packagedElement xmi:type="uml:Component" xmi:id="_JeW7sANPEeSiqeR6AQH_Pg" name="Component" useCase="_J7_S4ANPEeSiqeR6AQH_Pg _KVVnAANPEeSiqeR6AQH_Pg">
+    <ownedUseCase xmi:type="uml:UseCase" xmi:id="_J7_S4ANPEeSiqeR6AQH_Pg" name="UseCase1" subject="_JeW7sANPEeSiqeR6AQH_Pg">
+      <ownedBehavior xmi:type="uml:Interaction" xmi:id="_OhKHMANPEeSiqeR6AQH_Pg" name="Interaction">
+        <ownedAttribute xmi:type="uml:Property" xmi:id="_RN8dkANPEeSiqeR6AQH_Pg" name="" type="_JeW7sANPEeSiqeR6AQH_Pg"/>
+        <lifeline xmi:type="uml:Lifeline" xmi:id="_RN72gANPEeSiqeR6AQH_Pg" name="" represents="_RN8dkANPEeSiqeR6AQH_Pg" coveredBy="_VBg10ANPEeSiqeR6AQH_Pg"/>
+        <lifeline xmi:type="uml:Lifeline" xmi:id="_SvOqIANPEeSiqeR6AQH_Pg" name="Lifeline" represents="_LGaeoQNPEeSiqeR6AQH_Pg" coveredBy="_VBgOwANPEeSiqeR6AQH_Pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_VBg10ANPEeSiqeR6AQH_Pg" name="MessageRecv" covered="_RN72gANPEeSiqeR6AQH_Pg" message="_VBaIIANPEeSiqeR6AQH_Pg"/>
+        <fragment xmi:type="uml:MessageOccurrenceSpecification" xmi:id="_VBgOwANPEeSiqeR6AQH_Pg" name="MessageSend" covered="_SvOqIANPEeSiqeR6AQH_Pg" message="_VBaIIANPEeSiqeR6AQH_Pg"/>
+        <message xmi:type="uml:Message" xmi:id="_VBaIIANPEeSiqeR6AQH_Pg" name="Message" messageSort="asynchCall" receiveEvent="_VBg10ANPEeSiqeR6AQH_Pg" sendEvent="_VBgOwANPEeSiqeR6AQH_Pg"/>
+      </ownedBehavior>
+    </ownedUseCase>
+    <ownedUseCase xmi:type="uml:UseCase" xmi:id="_KVVnAANPEeSiqeR6AQH_Pg" name="UseCase2" subject="_JeW7sANPEeSiqeR6AQH_Pg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Actor" xmi:id="_Ko41IANPEeSiqeR6AQH_Pg" name="Actor1"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_LGaeoANPEeSiqeR6AQH_Pg" name="A_actor1_usecase1" memberEnd="_LGaeoQNPEeSiqeR6AQH_Pg _LGaepANPEeSiqeR6AQH_Pg">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_LGaeoQNPEeSiqeR6AQH_Pg" name="actor1" type="_Ko41IANPEeSiqeR6AQH_Pg" association="_LGaeoANPEeSiqeR6AQH_Pg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_LGaeogNPEeSiqeR6AQH_Pg" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_LGaeowNPEeSiqeR6AQH_Pg" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_LGaepANPEeSiqeR6AQH_Pg" name="usecase1" type="_J7_S4ANPEeSiqeR6AQH_Pg" association="_LGaeoANPEeSiqeR6AQH_Pg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_LGaepQNPEeSiqeR6AQH_Pg" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_LGaepgNPEeSiqeR6AQH_Pg" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Actor" xmi:id="_LvWG4ANPEeSiqeR6AQH_Pg" name="Actor2"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_MFy4AANPEeSiqeR6AQH_Pg" name="A_actor2_usecase2" memberEnd="_MFy4AQNPEeSiqeR6AQH_Pg _MFy4BANPEeSiqeR6AQH_Pg">
+    <ownedEnd xmi:type="uml:Property" xmi:id="_MFy4AQNPEeSiqeR6AQH_Pg" name="actor2" type="_LvWG4ANPEeSiqeR6AQH_Pg" association="_MFy4AANPEeSiqeR6AQH_Pg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_MFy4AgNPEeSiqeR6AQH_Pg" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_MFy4AwNPEeSiqeR6AQH_Pg" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:type="uml:Property" xmi:id="_MFy4BANPEeSiqeR6AQH_Pg" name="usecase2" type="_KVVnAANPEeSiqeR6AQH_Pg" association="_MFy4AANPEeSiqeR6AQH_Pg">
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_MFy4BQNPEeSiqeR6AQH_Pg" value="1"/>
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_MFy4BgNPEeSiqeR6AQH_Pg" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+</uml:Model>
