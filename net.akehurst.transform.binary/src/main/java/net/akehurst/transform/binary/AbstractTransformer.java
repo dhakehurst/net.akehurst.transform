@@ -1,12 +1,18 @@
-/*************************************************************************
-* Copyright (c) 2013 - 2014 Dr David H. Akehurst.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* and is available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-* 	Dr. David H. Akehurst
-*************************************************************************/
+/**************************************************************************
+ * Copyright (c) 2015 D. David H. Akehurst
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ***************************************************************************/
 package net.akehurst.transform.binary;
 
 import java.lang.reflect.Constructor;
@@ -15,8 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
-
-import net.akehurst.reflect.BetterMethodFinder;
 
 public class AbstractTransformer implements Transformer {
 	public AbstractTransformer() {
@@ -34,15 +38,14 @@ public class AbstractTransformer implements Transformer {
 	public void registerRule(Class<? extends Relation<?,?>> ruleType) {
 		getRuleTypes().add(ruleType);
 	}
-	List<Relation> getRules(Class<? extends Relation> ruleType, Object... constructorArgs) {
+	List<Relation> getRules(Class<? extends Relation> ruleType) {
 		List<Relation> rules = new Vector<Relation>();
 		for (Class<? extends Relation> rt : getRuleTypes()) {
 			if (ruleType.isAssignableFrom(rt)) {
 				if (!Modifier.isAbstract(rt.getModifiers())) {
 					try {
-						BetterMethodFinder bmf = new BetterMethodFinder(rt);
-						Constructor<Relation> cons = bmf.findConstructor(constructorArgs);
-						Relation r = cons.newInstance(constructorArgs);
+						Constructor<? extends Relation> cons = rt.getConstructor(new Class<?>[0]);
+						Relation r = cons.newInstance();
 						rules.add(r);
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -78,9 +81,9 @@ public class AbstractTransformer implements Transformer {
 		}
 		return right;
 	}
-	public <L,R> R transformLeft2Right(Class<? extends Relation<L,R>> ruleType, L left, Object... constructorArgs) throws RelationNotFoundException {
+	public <L,R> R transformLeft2Right(Class<? extends Relation<L,R>> ruleType, L left) throws RelationNotFoundException {
 		try {
-			List<Relation> rules = getRules(ruleType, constructorArgs);
+			List<Relation> rules = getRules(ruleType);
 			//might be better to do this as an follows, but needs assertions to be switched on
 			assert !rules.isEmpty() : "No rule " + ruleType + " found in transformer " + this;
 			if (rules.isEmpty()) {
@@ -101,11 +104,10 @@ public class AbstractTransformer implements Transformer {
 		}
 		return null;
 	}
-	public <L,R> List<? extends R> transformAllLeft2Right(Class<? extends Relation<L,R>> ruleType, List<? extends L> elements,
-			Object... constructorArgs) throws RelationNotFoundException {
+	public <L,R> List<? extends R> transformAllLeft2Right(Class<? extends Relation<L,R>> ruleType, List<? extends L> elements) throws RelationNotFoundException {
 		List<R> rights = new Vector<R>();
 		for (L left : elements) {
-			R o = transformLeft2Right(ruleType, left, constructorArgs);
+			R o = transformLeft2Right(ruleType, left);
 			rights.add(o);
 		}
 		return rights;
@@ -137,9 +139,9 @@ public class AbstractTransformer implements Transformer {
 		}
 		return left;
 	}
-	public <L,R> L transformRight2Left(Class<? extends Relation<L,R>> ruleClass, R right, Object... constructorArgs) throws RelationNotFoundException {
+	public <L,R> L transformRight2Left(Class<? extends Relation<L,R>> ruleClass, R right) throws RelationNotFoundException {
 		try {
-			List<Relation> rules = getRules(ruleClass, constructorArgs);
+			List<Relation> rules = getRules(ruleClass);
 			//might be better to do this as an follows, but needs assertions to be switched on
 			assert !rules.isEmpty() : "No rule " + ruleClass + " found in transformer " + this;
 			if (rules.isEmpty()) {
@@ -160,11 +162,11 @@ public class AbstractTransformer implements Transformer {
 		}
 		return null;
 	}
-	public <L,R> List<? extends L> transformAllRight2Left(Class<? extends Relation<L,R>> ruleClass, List<? extends R> rightObjects, Object...constructorArgs)throws RelationNotFoundException
+	public <L,R> List<? extends L> transformAllRight2Left(Class<? extends Relation<L,R>> ruleClass, List<? extends R> rightObjects) throws RelationNotFoundException
 	{
 		List<L> leftObjects = new Vector<L>();
 		for (R right : rightObjects) {
-			L left = transformRight2Left(ruleClass, right, constructorArgs);
+			L left = transformRight2Left(ruleClass, right);
 			leftObjects.add(left);
 		}
 		return leftObjects;
