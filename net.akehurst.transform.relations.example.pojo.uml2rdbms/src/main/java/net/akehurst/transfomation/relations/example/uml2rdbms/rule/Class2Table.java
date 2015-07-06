@@ -1,21 +1,32 @@
+/*
+ * Copyright (c) 2015 D. David H. Akehurst
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.akehurst.transfomation.relations.example.uml2rdbms.rule;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 import net.akehurst.transfomation.relations.example.uml2rdbms.Uml2Rdbms;
-import net.akehurst.transformation.relations.AbstractRelation;
-import net.akehurst.transformation.relations.DomainModelItentifier;
-import net.akehurst.transformation.relations.Relation;
-import net.akehurst.transformation.relations.Relation2;
 import net.akehurst.transformation.relations.RelationNotApplicableException;
 import net.akehurst.transformation.relations.RelationNotValidException;
 import net.akehurst.transformation.relations.Transformer;
 import net.akehurst.transformation.relations.annotations.Check;
-import net.akehurst.transformation.relations.annotations.Domain;
-import net.akehurst.transformation.relations.annotations.When;
 import net.akehurst.transformation.relations.annotations.CheckWhere;
+import net.akehurst.transformation.relations.annotations.Domain;
+import net.akehurst.transformation.relations.annotations.Enforce;
+import net.akehurst.transformation.relations.annotations.EnforceWhere;
+import net.akehurst.transformation.relations.annotations.When;
 
 /*
  // map each persistent class to a table
@@ -45,7 +56,7 @@ import net.akehurst.transformation.relations.annotations.CheckWhere;
  	}
  }
  */
-public class Class2Table extends AbstractRelation implements Relation2<simpleUml.Class, simpleRdbms.Table> {
+public class Class2Table extends AbstractUml2RdbmsRelation {
 
 	public Class2Table(Transformer tr) {
 		super(tr);
@@ -82,11 +93,7 @@ public class Class2Table extends AbstractRelation implements Relation2<simpleUml
 		simpleUml.Package p = c.getNamespace();
 
 		try {
-			Map<DomainModelItentifier, Iterable<?>> domainArgs = new HashMap<DomainModelItentifier, Iterable<?>>();
-			domainArgs.put(Uml2Rdbms.umlDomainId, Arrays.asList(p));
-			domainArgs.put(Uml2Rdbms.rdbmsDomainId, Arrays.asList(t.getSchema()));
-			Package2Schema r = (Package2Schema)this.getTransformer().findMatch(Uml2Rdbms.rdbmsDomainId, Package2Schema.class, domainArgs);
-
+			Package2Schema r = this.findMatch(Uml2Rdbms.rdbmsDomainId, Package2Schema.class, Arrays.asList(p), Arrays.asList(t.getSchema()));
 			result = result && null != r.getS();
 		} catch (RelationNotValidException ex) {
 			return false;
@@ -105,11 +112,7 @@ public class Class2Table extends AbstractRelation implements Relation2<simpleUml
 		simpleRdbms.Schema s = t.getSchema();
 
 		try {
-			Map<DomainModelItentifier, Iterable<?>> domainArgs = new HashMap<DomainModelItentifier, Iterable<?>>();
-			domainArgs.put(Uml2Rdbms.umlDomainId, Arrays.asList(c.getNamespace()));
-			domainArgs.put(Uml2Rdbms.rdbmsDomainId, Arrays.asList(s));
-			Package2Schema r = (Package2Schema)this.getTransformer().findMatch(Uml2Rdbms.umlDomainId, Package2Schema.class, domainArgs);
-
+			Package2Schema r = this.findMatch(Uml2Rdbms.umlDomainId, Package2Schema.class, Arrays.asList(c.getNamespace()), Arrays.asList(s));
 			result = result && null != r.getP();
 		} catch (RelationNotValidException ex) {
 			return false;
@@ -159,21 +162,40 @@ public class Class2Table extends AbstractRelation implements Relation2<simpleUml
 	}
 
 	@CheckWhere(simpleUml.SimpleUmlFactory.class)
-	public boolean where1() {
-		String prefix = "";
-		// this.getTransformer().checkMatchType(Attribute2Column.class, c, t,
-		// prefix);
+	public boolean checkWhere_uml() throws RelationNotValidException {
+		boolean result = true;
 
-		return false;
+		result &= this.checkMatch(Uml2Rdbms.umlDomainId, Attribute2Column.class, this.getC().getAttribute(), this.getT().getColumn());
+
+		return result;
 	}
 
 	@CheckWhere(simpleRdbms.SimpleRdbmsFactory.class)
-	public boolean where2() {
-		String prefix = "";
-		// this.getTransformer().checkMatchType(Attribute2Column.class, c, t,
-		// prefix);
+	public boolean checkWhere_rdbms() throws RelationNotValidException {
+		boolean result = true;
 
-		return false;
+		result &= this.checkMatch(Uml2Rdbms.rdbmsDomainId, Attribute2Column.class, this.getC().getAttribute(), this.getT().getColumn());
+
+		return result;
 	}
 
+	@Enforce(simpleRdbms.SimpleRdbmsFactory.class)
+	public void enforce1() {
+		return;
+	}
+
+	@Enforce(simpleUml.SimpleUmlFactory.class)
+	public void enforce2() {
+		return;
+	}
+
+	@EnforceWhere(simpleUml.SimpleUmlFactory.class)
+	public void enforceWhere1() {
+		return;
+	}
+
+	@EnforceWhere(simpleRdbms.SimpleRdbmsFactory.class)
+	public void enforceWhere2() {
+		return;
+	}
 }

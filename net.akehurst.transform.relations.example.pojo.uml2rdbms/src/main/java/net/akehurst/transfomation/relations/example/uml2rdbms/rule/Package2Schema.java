@@ -1,24 +1,29 @@
+/*
+ * Copyright (c) 2015 D. David H. Akehurst
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.akehurst.transfomation.relations.example.uml2rdbms.rule;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import simpleRdbms.Schema;
-import simpleUml.Package;
-import net.akehurst.transfomation.relations.example.uml2rdbms.Uml2Rdbms;
 import net.akehurst.transformation.relations.AbstractRelation;
-import net.akehurst.transformation.relations.DomainModelItentifier;
-import net.akehurst.transformation.relations.Relation;
 import net.akehurst.transformation.relations.Relation2;
 import net.akehurst.transformation.relations.Transformer;
 import net.akehurst.transformation.relations.annotations.Check;
+import net.akehurst.transformation.relations.annotations.CheckWhere;
 import net.akehurst.transformation.relations.annotations.Domain;
 import net.akehurst.transformation.relations.annotations.Enforce;
 import net.akehurst.transformation.relations.annotations.EnforceWhere;
 import net.akehurst.transformation.relations.annotations.When;
-import net.akehurst.transformation.relations.annotations.CheckWhere;
 
 /*
  top relation PackageToSchema   // map each package to a schema
