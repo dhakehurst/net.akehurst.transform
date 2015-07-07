@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Transformation Relations
+Bundle-SymbolicName: net.akehurst.transform.relations
+Bundle-Version: 1.0.0.qualifier
+Export-Package: net.akehurst.transformation.relations,
+ net.akehurst.transformation.relations.annotations
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

@@ -1,2 +1,2 @@
-BUNDLE_ROOT_PATH=src/main/resources
+BUNDLE_ROOT_PATH=target/classes
 eclipse.preferences.version=1
