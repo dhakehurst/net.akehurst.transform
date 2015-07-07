@@ -11,20 +11,22 @@
 	<!-- Project Information -->
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>Simple Transformer: for simple, one-direction, model to model transformations</description>
-	<url>...</url>
+	<url>http://dr.david.h.akehurst.net/transform</url>
 	<inceptionYear>2014</inceptionYear>
+	
 	<licenses>
 		<license>
-			<name>Eclipse Public License - v 1.0</name>
-			<url>http://www.eclipse.org/legal/epl-v10.html</url>
-			<distribution></distribution>
-			<comments>(c) Dr. David H. Akehurst</comments>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
 		</license>
 	</licenses>
+	
 	<organization>
 		<name>Dr. David H. Akehurst</name>
 		<url></url>
 	</organization>
+	
 	<developers>
 		<developer>
 			<name>Dr. David H. Akehurst</name>
