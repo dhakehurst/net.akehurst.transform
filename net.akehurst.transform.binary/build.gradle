@@ -1,0 +1,151 @@
+/**
+ * Copyright (C) 2016 Dr. David H. Akehurst (http://dr.david.h.akehurst.net)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
+    }
+}
+apply plugin: 'java'
+apply plugin: 'osgi'
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: 'com.jfrog.bintray'
+
+group 'net.akehurst.transform'
+archivesBaseName = 'net.akehurst.transform.binary'
+version = '2.0.0'
+
+sourceCompatibility = 1.8
+targetCompatibility = '1.8'
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile "junit:junit:4.12"
+    testCompile "com.tngtech.java:junit-dataprovider:1.5.0"
+}
+
+test {
+
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+ext {
+	pomFile = file("$buildDir/generated-pom.xml")
+}
+
+configurations {
+	pom
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+    if (pomFile.exists()) {
+        pom pomFile
+    }
+}
+
+//signing {
+//	sign configurations.archives
+//	sign configurations.pom
+//}
+
+//task preparePublish(dependsOn: signArchives)
+
+model {
+    tasks.generatePomFileForMavenJavaPublication {
+        destination = pomFile
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            artifact sourcesJar {
+                classifier "sources"
+            }
+            artifact javadocJar {
+                classifier "javadoc"
+            }
+			pom.withXml {
+				asNode().children().last() + {
+					resolveStrategy = Closure.DELEGATE_FIRST
+					packaging 'jar'
+					name group+':'+archivesBaseName
+					inceptionYear '2015'
+					organization {
+						name 'Dr. David H. Akehurst'
+						url 'http://dr.david.h.akehurst.net'
+					}
+					licenses {
+			          license {
+			            name 'The Apache License, Version 2.0'
+			            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+			          }
+			        }
+			        developers {
+			        	developer {
+			        		name 'Dr. David H. Akehurst'
+			        		email 'dr.david.h@akehurst.net'
+			        		organization 'akehurst.net'
+			        		organizationUrl 'http://dr.david.h.akehurst.net'
+			        	}
+			        }
+			        scm {
+			        	url 'git@github.com:dhakehurst/net.akehurst.transform.git'
+			        	connection 'scm:git:git@github.com:dhakehurst/net.akehurst.transform.git'
+			        	developerConnection 'scm:git:git@github.com:dhakehurst/net.akehurst.transform.git'
+			        }
+			    }
+			}
+        }
+    }
+}
+
+    bintray {
+		user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
+		key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+		publications = ['mavenJava']
+		pkg {
+			repo = 'maven'
+			name = 'net.akehurst.transform'
+			userOrg = user
+			licenses = ['Apache-2.0']
+			vcsUrl = 'https://github.com/dhakehurst/net.akehurst.transform.git'
+			version {
+				name = "${project.version}"
+			}
+		}
+	}

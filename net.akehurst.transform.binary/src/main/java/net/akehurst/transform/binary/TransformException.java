@@ -15,15 +15,15 @@
  */
 package net.akehurst.transform.binary;
 
+/**
+ * thrown by Relation Rules that fail to perform the transformation.
+ * 
+ * @author akehurst
+ *
+ */
+public class TransformException extends Exception {
 
-public interface Relation<L, R> {
-	
-	boolean isValidForLeft2Right(L left);
-	boolean isValidForRight2Left(R right);
-
-	R constructLeft2Right(L left, Transformer transformer);
-	L constructRight2Left(R right, Transformer transformer);
-
-	void configureLeft2Right(L left, R right, Transformer transformer);
-	void configureRight2Left(L left, R right, Transformer transformer);
+	public TransformException(final String message, final Throwable cause) {
+		super(message, cause);
+	}
 }

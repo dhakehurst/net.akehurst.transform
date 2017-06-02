@@ -15,9 +15,19 @@
  */
 package net.akehurst.transform.binary;
 
-public class RelationNotFoundException extends Exception {
+public interface IBinaryRule<L, R> {
 
-	public RelationNotFoundException(String message) {
-		super(message);
-	}
+	boolean isValidForLeft2Right(L left);
+
+	boolean isValidForRight2Left(R right);
+
+	boolean isAMatch(L left, R right, ITransformer transformer) throws RuleNotFoundException;
+
+	R constructLeft2Right(L left, ITransformer transformer) throws TransformException, RuleNotFoundException;
+
+	L constructRight2Left(R right, ITransformer transformer) throws TransformException, RuleNotFoundException;
+
+	void updateLeft2Right(L left, R right, ITransformer transformer) throws TransformException, RuleNotFoundException;
+
+	void updateRight2Left(L left, R right, ITransformer transformer) throws TransformException, RuleNotFoundException;
 }
