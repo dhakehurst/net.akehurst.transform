@@ -32,15 +32,13 @@ public class AElement2BElement implements IBinaryRule<AElement, BElement> {
 	}
 
 	@Override
-	public void updateLeft2Right(final AElement left, final BElement right, final ITransformer transformer)
-			throws TransformException, RuleNotFoundException {
+	public void updateLeft2Right(final AElement left, final BElement right, final ITransformer transformer) throws TransformException, RuleNotFoundException {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void updateRight2Left(final AElement left, final BElement right, final ITransformer transformer)
-			throws TransformException, RuleNotFoundException {
+	public void updateRight2Left(final AElement left, final BElement right, final ITransformer transformer) throws TransformException, RuleNotFoundException {
 		// TODO Auto-generated method stub
 
 	}

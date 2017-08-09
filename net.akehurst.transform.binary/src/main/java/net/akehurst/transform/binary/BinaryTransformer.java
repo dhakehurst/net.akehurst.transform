@@ -18,13 +18,16 @@ package net.akehurst.transform.binary;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-public class AbstractTransformer implements ITransformer {
+public class BinaryTransformer implements ITransformer {
 
-	public AbstractTransformer() {
+	public BinaryTransformer() {
 		this.ruleTypes = new ArrayList<>();
 		this.mappingsLeft2Right = new HashMap<>();
 		this.mappingsRight2Left = new HashMap<>();
@@ -100,6 +103,33 @@ public class AbstractTransformer implements ITransformer {
 		}
 	}
 
+	@Override
+	public <L, R> boolean isAllAMatch(final Class<? extends IBinaryRule<L, R>> ruleClass, final List<L> left, final List<R> right)
+			throws RuleNotFoundException {
+		if (null == left && null == right) {
+			return true;
+		}
+		if (null == left || null == right) {
+			return false;
+		}
+		if (left.isEmpty() && right.isEmpty()) {
+			return true;
+		}
+		if (left.size() != right.size()) {
+			return false;
+		}
+		for (int i = 0; i < left.size(); ++i) {
+			final L l = left.get(i);
+			final R r = right.get(i);
+			final boolean elementMatch = this.isAMatch(ruleClass, l, r);
+			// fail fast
+			if (!elementMatch) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	// --- left to right ---
 	private <L, R> Map<L, R> getRuleMappingsLeft2Right(final Class<? extends IBinaryRule<L, R>> rule) {
 		Map<L, R> ruleMappings = (Map<L, R>) this.mappingsLeft2Right.get(rule);
@@ -170,6 +200,21 @@ public class AbstractTransformer implements ITransformer {
 	}
 
 	@Override
+	public <L, R> Set<? extends R> transformAllLeft2Right(final Class<? extends IBinaryRule<L, R>> ruleClass, final Set<? extends L> leftObjects)
+			throws RuleNotFoundException, TransformException {
+		if (null == leftObjects) {
+			return null;
+		} else {
+			final Set<R> rightObjects = new HashSet<>();
+			for (final L left : leftObjects) {
+				final R o = this.transformLeft2Right(ruleClass, left);
+				rightObjects.add(o);
+			}
+			return rightObjects;
+		}
+	}
+
+	@Override
 	public <L, R> void updateLeft2Right(final Class<? extends IBinaryRule<L, R>> ruleClass, final L left, final R right)
 			throws RuleNotFoundException, TransformException {
 		if (null == left || null == right) {
@@ -234,7 +279,48 @@ public class AbstractTransformer implements ITransformer {
 		}
 	}
 
-	private <L, R> R findMatchLeft2Right(final Class<? extends IBinaryRule<L, R>> ruleClass, final L left, final List<? extends R> rightList)
+	@Override
+	public <L, R> void updateAllLeft2Right(final Class<? extends IBinaryRule<L, R>> ruleClass, final Set<? extends L> leftSet, final Set<? extends R> rightSet)
+			throws RuleNotFoundException, TransformException {
+		if (null == leftSet || null == rightSet) {
+			throw new TransformException("Cannot update from or to a null collection", null);
+		}
+
+		final Set<R> newRightSet = new HashSet<>();
+		for (final L left : leftSet) {
+			R right = this.findMatchLeft2Right(ruleClass, left, rightSet);
+			if (null == right) {
+				right = this.transformLeft2Right(ruleClass, left);
+			} else {
+				this.updateLeft2Right(ruleClass, left, right);
+			}
+			newRightSet.add(right);
+		}
+
+		// delete those in right that are not mapped from the left
+		final Set<R> toDelete = new HashSet<>();
+		for (final R oldRight : rightSet) {
+			if (newRightSet.contains(oldRight)) {
+				// ok
+			} else {
+				toDelete.add(oldRight);
+			}
+		}
+		rightSet.removeAll(toDelete);
+		// add new right things mapped from the left
+		// some implementations of Set.addAll (datanucleus JoinSetStore) are not correct
+		// i.e. it adds the element even if it exists
+		// ((Set<R>) rightSet).addAll(newRightSet);
+		for (final R right : newRightSet) {
+			if (rightSet.contains(right)) {
+				// do nothing
+			} else {
+				((Set<R>) rightSet).add(right);
+			}
+		}
+	}
+
+	private <L, R> R findMatchLeft2Right(final Class<? extends IBinaryRule<L, R>> ruleClass, final L left, final Collection<? extends R> rightList)
 			throws RuleNotFoundException {
 		for (final R right : rightList) {
 			if (this.isAMatch(ruleClass, left, right)) {
@@ -315,6 +401,21 @@ public class AbstractTransformer implements ITransformer {
 	}
 
 	@Override
+	public <L, R> Set<? extends L> transformAllRight2Left(final Class<? extends IBinaryRule<L, R>> ruleClass, final Set<? extends R> rightObjects)
+			throws RuleNotFoundException, TransformException {
+		if (null == rightObjects) {
+			return null;
+		} else {
+			final Set<L> leftObjects = new HashSet<>();
+			for (final R right : rightObjects) {
+				final L left = this.transformRight2Left(ruleClass, right);
+				leftObjects.add(left);
+			}
+			return leftObjects;
+		}
+	}
+
+	@Override
 	public <L, R> void updateRight2Left(final Class<? extends IBinaryRule<L, R>> ruleClass, final L left, final R right)
 			throws RuleNotFoundException, TransformException {
 		if (null == left || null == right) {
@@ -382,9 +483,50 @@ public class AbstractTransformer implements ITransformer {
 		}
 	}
 
-	private <L, R> L findMatchRight2Left(final Class<? extends IBinaryRule<L, R>> ruleClass, final R right, final List<? extends L> leftList)
+	@Override
+	public <L, R> void updateAllRight2Left(final Class<? extends IBinaryRule<L, R>> ruleClass, final Set<? extends L> leftSet, final Set<? extends R> rightSet)
+			throws RuleNotFoundException, TransformException {
+		if (null == leftSet || null == rightSet) {
+			throw new TransformException("Cannot update from or to a null collection", null);
+		}
+
+		final Set<L> newLeftSet = new HashSet<>();
+		for (final R right : rightSet) {
+			L left = this.findMatchRight2Left(ruleClass, right, leftSet);
+			if (null == left) {
+				left = this.transformRight2Left(ruleClass, right);
+			} else {
+				this.updateRight2Left(ruleClass, left, right);
+			}
+			newLeftSet.add(left);
+		}
+
+		// delete those in left that are not mapped from the right
+		final Set<L> toDelete = new HashSet<>();
+		for (final L oldLeft : leftSet) {
+			if (newLeftSet.contains(oldLeft)) {
+				// ok
+			} else {
+				toDelete.add(oldLeft);
+			}
+		}
+		leftSet.removeAll(toDelete);
+		// add new left things mapped from the right
+		// some implementations of Set.addAll (datanucleus JoinSetStore) are not correct
+		// i.e. it adds the element even if it exists
+		// ((Set<L>) leftSet).addAll(newLeftSet);
+		for (final L left : newLeftSet) {
+			if (leftSet.contains(left)) {
+				// do nothing
+			} else {
+				((Set<L>) leftSet).add(left);
+			}
+		}
+	}
+
+	private <L, R> L findMatchRight2Left(final Class<? extends IBinaryRule<L, R>> ruleClass, final R right, final Collection<? extends L> leftCol)
 			throws RuleNotFoundException {
-		for (final L left : leftList) {
+		for (final L left : leftCol) {
 			if (this.isAMatch(ruleClass, left, right)) {
 				return left;
 			}
