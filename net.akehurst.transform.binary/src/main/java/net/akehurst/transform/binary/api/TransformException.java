@@ -13,17 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.akehurst.transform.binary;
+
+package net.akehurst.transform.binary.api;
 
 /**
- * thrown by Relation Rules that fail to perform the transformation.
- * 
- * @author akehurst
+ * Thrown by Rules that fail to perform the transformation.
+ *
+ * @author Dr. David H. Akehurst
  *
  */
-public class TransformException extends Exception {
+public class TransformException extends RuntimeException {
 
-	public TransformException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
+    private static final long serialVersionUID = -1349802693285606128L;
+
+    public TransformException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 }

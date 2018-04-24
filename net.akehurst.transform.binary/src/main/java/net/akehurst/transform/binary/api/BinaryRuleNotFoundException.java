@@ -13,11 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.akehurst.transform.binary;
 
-public class RuleNotFoundException extends Exception {
+package net.akehurst.transform.binary.api;
 
-	public RuleNotFoundException(String message) {
-		super(message);
-	}
+/**
+ * Thrown if the transformer cannot find a rule. Probably means the Rule has not been registered.
+ *
+ * @author Dr. David H. Akehurst
+ *
+ */
+public class BinaryRuleNotFoundException extends RuntimeException {
+
+    private static final long serialVersionUID = -5844476163695420921L;
+
+    public BinaryRuleNotFoundException(final String message) {
+        super(message);
+    }
 }

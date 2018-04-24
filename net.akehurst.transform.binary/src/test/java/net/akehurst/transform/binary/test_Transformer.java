@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.akehurst.transform.binary;
 
 import java.util.ArrayList;
@@ -27,119 +28,134 @@ import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
 import com.tngtech.java.junit.dataprovider.UseDataProvider;
 
+import net.akehurst.transform.binary.api.TransformException;
+
 @RunWith(DataProviderRunner.class)
 public class test_Transformer {
 
-	@DataProvider
-	public static Object[][] data_updateAllLeft2Right() {
-		return new Object[][] {
-				//
-				{ null, null, TransformException.class },
-				//
-				{ null, new Object[] {}, TransformException.class },
-				//
-				{ new Object[] {}, null, TransformException.class }, /**/ { new Object[] {}, new Object[] {}, /**/ new Object[] {} },
-				//
-				{ new Object[] {}, /**/ new Object[] { new BElement(1), new BElement(2), new BElement(3) }, /**/ new Object[] {} },
-				//
-				{ new Object[] { new AElement(1), new AElement(2), new AElement(3) }, /**/ new Object[] {}, /**/
-						new Object[] { new BElement(1), new BElement(2), new BElement(3) } },
-				//
-				{ new Object[] { new AElement(1) }, /**/ new Object[] { new BElement(1) }, /**/ new Object[] { new BElement(1) } },
-				//
-				{ new Object[] { new AElement(1) }, /**/ new Object[] { new BElement(2) }, /**/ new Object[] { new BElement(1) } },
-				//
-				{ new Object[] { new AElement(2) }, /**/ new Object[] { new BElement(1) }, /**/ new Object[] { new BElement(2) } },
-				//
-				{ new Object[] { new AElement(1), new AElement(2) }, /**/ new Object[] { new BElement(1) },
-						/**/ new Object[] { new BElement(1), new BElement(2) } },
-				//
-				{ new Object[] { new AElement(1) }, /**/ new Object[] { new BElement(1), new BElement(2) }, /**/ new Object[] { new BElement(1) } },
-				//
-				{ new Object[] { new AElement(1), new AElement(2) }, /**/ new Object[] { new BElement(2) },
-						/**/ new Object[] { new BElement(1), new BElement(2) } },
-				//
-				{ new Object[] { new AElement(2) }, /**/ new Object[] { new BElement(1), new BElement(2) }, /**/ new Object[] { new BElement(2) } }
-				//
-		};
-	}
+    @DataProvider
+    public static Object[][] data_updateAllLeft2Right() {
+        //@formatter:off
+        return new Object[][] {
+            { null, null, TransformException.class },
+            { null, new Object[] {}, TransformException.class },
+            { new Object[] {}, null, TransformException.class },
+            { new Object[] {}, new Object[] {}, new Object[] {} },
+            {
+                new Object[] {},
+                new Object[] { new BElement(1), new BElement(2), new BElement(3) },
+                new Object[] {}
+            },
+            { new Object[] { new AElement(1), new AElement(2), new AElement(3) },
+              new Object[] {},
+              new Object[] { new BElement(1), new BElement(2), new BElement(3) }
+            },
+            { new Object[] { new AElement(1) },
+              new Object[] { new BElement(1) },
+              new Object[] { new BElement(1) }
+            },
+            { new Object[] { new AElement(1) },
+              new Object[] { new BElement(2) },
+              new Object[] { new BElement(1) }
+            },
+            { new Object[] { new AElement(2) },
+              new Object[] { new BElement(1) },
+              new Object[] { new BElement(2) }
+            },
+            { new Object[] { new AElement(1), new AElement(2) },
+              new Object[] { new BElement(1) },
+              new Object[] { new BElement(1), new BElement(2) }
+            },
+            { new Object[] { new AElement(1) },
+              new Object[] { new BElement(1), new BElement(2) },
+              new Object[] { new BElement(1) }
+            },
+            { new Object[] { new AElement(1), new AElement(2) },
+              new Object[] { new BElement(2) },
+              new Object[] { new BElement(1), new BElement(2) }
+            },
+            { new Object[] { new AElement(2) },
+              new Object[] { new BElement(1), new BElement(2) },
+              new Object[] { new BElement(2) }
+            }
+        };
+        //@formatter:on
+    }
 
-	@Test
-	@UseDataProvider("data_updateAllLeft2Right")
-	public void test_updateAllLeft2Right(final Object[] leftArr, final Object[] rightArr, final Object result) {
-		try {
-			final List<AElement> leftList = null == leftArr ? null : new ArrayList(Arrays.asList(leftArr));
-			final List<BElement> rightList = null == rightArr ? null : new ArrayList(Arrays.asList(rightArr));
-			final ExampleTransformer transformer = new ExampleTransformer();
-			transformer.updateAllLeft2Right(AElement2BElement.class, leftList, rightList);
+    @Test
+    @UseDataProvider("data_updateAllLeft2Right")
+    public void test_updateAllLeft2Right(final Object[] leftArr, final Object[] rightArr, final Object result) {
+        try {
+            final List<AElement> leftList = null == leftArr ? null : new ArrayList(Arrays.asList(leftArr));
+            final List<BElement> rightList = null == rightArr ? null : new ArrayList(Arrays.asList(rightArr));
+            final ExampleTransformer transformer = new ExampleTransformer();
+            transformer.updateAllLeft2Right(AElement2BElement.class, leftList, rightList);
 
-			final List<BElement> resultList = null == result ? null : new ArrayList(Arrays.asList((Object[]) result));
-			Assert.assertEquals(resultList, rightList);
+            final List<BElement> resultList = null == result ? null : new ArrayList(Arrays.asList((Object[]) result));
+            Assert.assertEquals(resultList, rightList);
 
-		} catch (final Exception e) {
-			if (e.getClass().equals(result)) {
-				// ok
-			} else {
-				e.printStackTrace();
-				Assert.fail(e.getMessage());
-			}
-		}
-	}
+        } catch (final Exception e) {
+            if (e.getClass().equals(result)) {
+                // ok
+            } else {
+                e.printStackTrace();
+                Assert.fail(e.getMessage());
+            }
+        }
+    }
 
-	@DataProvider
-	public static Object[][] data_updateAllRight2Left() {
-		return new Object[][] {
-				//
-				{ null, null, TransformException.class },
-				//
-				{ null, new Object[] {}, TransformException.class },
-				//
-				{ new Object[] {}, null, TransformException.class }, /**/ { new Object[] {}, new Object[] {}, /**/ new Object[] {} },
-				//
-				{ new Object[] {}, /**/ new Object[] { new BElement(1), new BElement(2), new BElement(3) },
-						/**/ new Object[] { new AElement(1), new AElement(2), new AElement(3) } },
-				//
-				{ new Object[] { new AElement(1), new AElement(2), new AElement(3) }, /**/ new Object[] {}, /**/
-						new Object[] {} },
-				//
-				{ new Object[] { new AElement(1) }, /**/ new Object[] { new BElement(1) }, /**/ new Object[] { new AElement(1) } },
-				//
-				{ new Object[] { new AElement(1) }, /**/ new Object[] { new BElement(2) }, /**/ new Object[] { new AElement(2) } },
-				//
-				{ new Object[] { new AElement(2) }, /**/ new Object[] { new BElement(1) }, /**/ new Object[] { new AElement(1) } },
-				//
-				{ new Object[] { new AElement(1), new AElement(2) }, /**/ new Object[] { new BElement(1) }, /**/ new Object[] { new AElement(1) } },
-				//
-				{ new Object[] { new AElement(1) }, /**/ new Object[] { new BElement(1), new BElement(2) },
-						/**/ new Object[] { new AElement(1), new AElement(2) } },
-				//
-				{ new Object[] { new AElement(1), new AElement(2) }, /**/ new Object[] { new BElement(2) }, /**/ new Object[] { new AElement(2) } },
-				//
-				{ new Object[] { new AElement(2) }, /**/ new Object[] { new BElement(1), new BElement(2) },
-						/**/ new Object[] { new AElement(1), new AElement(2) } }
-				//
-		};
-	}
+    @DataProvider
+    public static Object[][] data_updateAllRight2Left() {
+        return new Object[][] {
+            //
+            { null, null, TransformException.class },
+            //
+            { null, new Object[] {}, TransformException.class },
+            //
+            { new Object[] {}, null, TransformException.class }, /**/ { new Object[] {}, new Object[] {}, /**/ new Object[] {} },
+            //
+            { new Object[] {}, /**/ new Object[] { new BElement(1), new BElement(2), new BElement(3) },
+                /**/ new Object[] { new AElement(1), new AElement(2), new AElement(3) } },
+            //
+            { new Object[] { new AElement(1), new AElement(2), new AElement(3) }, new Object[] {}, new Object[] {} },
+            //
+            { new Object[] { new AElement(1) }, /**/ new Object[] { new BElement(1) }, /**/ new Object[] { new AElement(1) } },
+            //
+            { new Object[] { new AElement(1) }, /**/ new Object[] { new BElement(2) }, /**/ new Object[] { new AElement(2) } },
+            //
+            { new Object[] { new AElement(2) }, /**/ new Object[] { new BElement(1) }, /**/ new Object[] { new AElement(1) } },
+            //
+            { new Object[] { new AElement(1), new AElement(2) }, /**/ new Object[] { new BElement(1) }, /**/ new Object[] { new AElement(1) } },
+            //
+            { new Object[] { new AElement(1) }, /**/ new Object[] { new BElement(1), new BElement(2) },
+                /**/ new Object[] { new AElement(1), new AElement(2) } },
+            //
+            { new Object[] { new AElement(1), new AElement(2) }, /**/ new Object[] { new BElement(2) }, /**/ new Object[] { new AElement(2) } },
+            //
+            { new Object[] { new AElement(2) }, /**/ new Object[] { new BElement(1), new BElement(2) }, /**/ new Object[] { new AElement(1), new AElement(2) } }
+            //
+        };
+    }
 
-	@Test
-	@UseDataProvider("data_updateAllRight2Left")
-	public void test_updateAllRight2Left(final Object[] leftArr, final Object[] rightArr, final Object result) {
-		try {
-			final List<AElement> leftList = null == leftArr ? null : new ArrayList(Arrays.asList(leftArr));
-			final List<BElement> rightList = null == rightArr ? null : new ArrayList(Arrays.asList(rightArr));
-			final ExampleTransformer transformer = new ExampleTransformer();
-			transformer.updateAllRight2Left(AElement2BElement.class, leftList, rightList);
+    @Test
+    @UseDataProvider("data_updateAllRight2Left")
+    public void test_updateAllRight2Left(final Object[] leftArr, final Object[] rightArr, final Object result) {
+        try {
+            final List<AElement> leftList = null == leftArr ? null : new ArrayList(Arrays.asList(leftArr));
+            final List<BElement> rightList = null == rightArr ? null : new ArrayList(Arrays.asList(rightArr));
+            final ExampleTransformer transformer = new ExampleTransformer();
+            transformer.updateAllRight2Left(AElement2BElement.class, leftList, rightList);
 
-			final List<BElement> resultList = null == result ? null : new ArrayList(Arrays.asList((Object[]) result));
-			Assert.assertEquals(resultList, leftList);
+            final List<BElement> resultList = null == result ? null : new ArrayList(Arrays.asList((Object[]) result));
+            Assert.assertEquals(resultList, leftList);
 
-		} catch (final Exception e) {
-			if (e.getClass().equals(result)) {
-				// ok
-			} else {
-				e.printStackTrace();
-				Assert.fail(e.getMessage());
-			}
-		}
-	}
+        } catch (final Exception e) {
+            if (e.getClass().equals(result)) {
+                // ok
+            } else {
+                e.printStackTrace();
+                Assert.fail(e.getMessage());
+            }
+        }
+    }
 }

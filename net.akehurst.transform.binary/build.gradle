@@ -23,13 +23,14 @@ buildscript {
 }
 apply plugin: 'java'
 apply plugin: 'osgi'
+apply plugin: 'checkstyle'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 apply plugin: 'com.jfrog.bintray'
 
 group 'net.akehurst.transform'
 archivesBaseName = 'net.akehurst.transform.binary'
-version = '2.1.1'
+version = '2.2.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = '1.8'
@@ -51,6 +52,15 @@ test {
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc
+}
+
+checkstyle {
+	toolVersion = '8.9'
+	configFile = rootProject.file('src/checkstyle/checkstyle.xml')
+	configProperties = [
+        'configDir': rootProject.file('src/checkstyle'),
+        'baseDir': rootDir,
+    ]
 }
 
 task sourcesJar(type: Jar) {
@@ -91,6 +101,10 @@ model {
 publishing {
     publications {
         mavenJava(MavenPublication) {
+        	    groupId "${group}"
+	        	artifactId "${project.name}".replace("${group}.", "")
+			version "${version}"
+			
             from components.java
 
             artifact sourcesJar {
@@ -116,17 +130,17 @@ publishing {
 			          }
 			        }
 			        developers {
-			        	developer {
+			        	  developer {
 			        		name 'Dr. David H. Akehurst'
 			        		email 'dr.david.h@akehurst.net'
 			        		organization 'akehurst.net'
 			        		organizationUrl 'http://dr.david.h.akehurst.net'
-			        	}
+			          }
 			        }
 			        scm {
-			        	url 'git@github.com:dhakehurst/net.akehurst.transform.git'
-			        	connection 'scm:git:git@github.com:dhakehurst/net.akehurst.transform.git'
-			        	developerConnection 'scm:git:git@github.com:dhakehurst/net.akehurst.transform.git'
+			        	  url 'git@github.com:dhakehurst/net.akehurst.transform.git'
+			          connection 'scm:git:git@github.com:dhakehurst/net.akehurst.transform.git'
+			          developerConnection 'scm:git:git@github.com:dhakehurst/net.akehurst.transform.git'
 			        }
 			    }
 			}
