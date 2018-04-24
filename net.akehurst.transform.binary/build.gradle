@@ -86,7 +86,7 @@ artifacts {
 }
 
 //signing {
-//	sign configurations.archives
+//    sign configurations.archives
 //	sign configurations.pom
 //}
 
@@ -160,6 +160,10 @@ publishing {
 			vcsUrl = 'https://github.com/dhakehurst/net.akehurst.transform.git'
 			version {
 				name = "${project.version}"
+				gpg {
+                    sign = true
+                    passphrase = project.hasProperty('passphrase') ? project.property('passphrase') : System.getenv('BINTRAY_PASSPHRASE')
+                }				
 			}
 		}
 	}
