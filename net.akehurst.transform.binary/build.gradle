@@ -117,7 +117,9 @@ publishing {
 				asNode().children().last() + {
 					resolveStrategy = Closure.DELEGATE_FIRST
 					packaging 'jar'
-					name group+':'+archivesBaseName
+					name 'Binary Transform'
+					description 'A minimal library for enabling bi-directional (binary) transformations between data structures (models)'
+					url 'http://github.com/dhakehurst/net.akehurst.transform/'
 					inceptionYear '2015'
 					organization {
 						name 'Dr. David H. Akehurst'
@@ -138,7 +140,7 @@ publishing {
 			          }
 			        }
 			        scm {
-			        	  url 'git@github.com:dhakehurst/net.akehurst.transform.git'
+			          url 'http://github.com/dhakehurst/net.akehurst.transform'
 			          connection 'scm:git:git@github.com:dhakehurst/net.akehurst.transform.git'
 			          developerConnection 'scm:git:git@github.com:dhakehurst/net.akehurst.transform.git'
 			        }
