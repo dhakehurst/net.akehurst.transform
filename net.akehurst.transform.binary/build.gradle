@@ -149,8 +149,8 @@ publishing {
 }
 
     bintray {
-		user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-		key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+		user = project.hasProperty('user') ? project.property('user') : System.getenv('BINTRAY_USER')
+		key = project.hasProperty('apiKey') ? project.property('apiKey') : System.getenv('BINTRAY_API_KEY')
 		publications = ['mavenJava']
 		pkg {
 			repo = 'maven'
@@ -160,10 +160,6 @@ publishing {
 			vcsUrl = 'https://github.com/dhakehurst/net.akehurst.transform.git'
 			version {
 				name = "${project.version}"
-				gpg {
-                    sign = true
-                    passphrase = project.hasProperty('passphrase') ? project.property('passphrase') : System.getenv('BINTRAY_PASSPHRASE')
-                }				
 			}
 		}
 	}
