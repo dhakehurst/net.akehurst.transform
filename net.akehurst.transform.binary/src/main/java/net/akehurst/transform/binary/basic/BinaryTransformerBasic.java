@@ -103,7 +103,7 @@ public class BinaryTransformerBasic implements BinaryTransformer {
             for (final BinaryRule<L, R> rule : rules) {
                 boolean b = false;
                 try {
-                    b = rule.isValidForLeft2Right(left) && rule.isValidForRight2Left(right);
+                    b = rule.isValidForLeft2Right(left, this) && rule.isValidForRight2Left(right, this);
                 } catch (final ClassCastException e) {
                     ++exceptionCount;
                 }
@@ -182,7 +182,7 @@ public class BinaryTransformerBasic implements BinaryTransformer {
                 for (final BinaryRule rule : rules) {
                     boolean b = false;
                     try {
-                        b = rule.isValidForLeft2Right(left);
+                        b = rule.isValidForLeft2Right(left, this);
                     } catch (final ClassCastException e) {
                         ++exceptionCount;
                     }
@@ -239,7 +239,7 @@ public class BinaryTransformerBasic implements BinaryTransformer {
             for (final BinaryRule<L, R> rule : rules) {
                 boolean b = false;
                 try {
-                    b = rule.isValidForLeft2Right(left);
+                    b = rule.isValidForLeft2Right(left, this);
                 } catch (final ClassCastException e) {
                     ++exceptionCount;
                 }
@@ -258,7 +258,7 @@ public class BinaryTransformerBasic implements BinaryTransformer {
 
     @Override
     public <L, R> void updateAllLeft2Right(final Class<? extends BinaryRule<L, R>> ruleClass, final List<? extends L> leftList,
-        final List<? extends R> rightList) {
+            final List<? extends R> rightList) {
         if (null == leftList || null == rightList) {
             throw new TransformException("Cannot update from or to a null collection", null);
         }
@@ -375,7 +375,7 @@ public class BinaryTransformerBasic implements BinaryTransformer {
                 for (final BinaryRule rule : rules) {
                     boolean b = false;
                     try {
-                        b = rule.isValidForRight2Left(right);
+                        b = rule.isValidForRight2Left(right, this);
                     } catch (final ClassCastException e) {
                         ++exceptionCount;
                     }
@@ -432,7 +432,7 @@ public class BinaryTransformerBasic implements BinaryTransformer {
             for (final BinaryRule<L, R> rule : rules) {
                 boolean b = false;
                 try {
-                    b = rule.isValidForRight2Left(right);
+                    b = rule.isValidForRight2Left(right, this);
                 } catch (final ClassCastException e) {
                     ++exceptionCount;
                 }
@@ -451,7 +451,7 @@ public class BinaryTransformerBasic implements BinaryTransformer {
 
     @Override
     public <L, R> void updateAllRight2Left(final Class<? extends BinaryRule<L, R>> ruleClass, final List<? extends L> leftList,
-        final List<? extends R> rightList) {
+            final List<? extends R> rightList) {
         if (null == leftList || null == rightList) {
             throw new TransformException("Cannot update from or to a null collection", null);
         }

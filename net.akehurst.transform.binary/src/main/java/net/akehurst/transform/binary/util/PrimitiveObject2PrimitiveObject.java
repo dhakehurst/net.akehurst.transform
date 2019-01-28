@@ -36,12 +36,12 @@ public class PrimitiveObject2PrimitiveObject implements BinaryRule<Object, Objec
     }
 
     @Override
-    public boolean isValidForLeft2Right(final Object left) {
+    public boolean isValidForLeft2Right(final Object left, final BinaryTransformer transformer) {
         return PrimitiveObject2PrimitiveObject.isPrimitive(left.getClass());
     }
 
     @Override
-    public boolean isValidForRight2Left(final Object right) {
+    public boolean isValidForRight2Left(final Object right, final BinaryTransformer transformer) {
         return PrimitiveObject2PrimitiveObject.isPrimitive(right.getClass());
     }
 

@@ -26,12 +26,12 @@ import net.akehurst.transform.binary.api.TransformException;
 public class ListPrimitiveObject2ListPrimitiveObject implements BinaryRule<List<Object>, List<Object>> {
 
     @Override
-    public boolean isValidForLeft2Right(final List<Object> left) {
+    public boolean isValidForLeft2Right(final List<Object> left, final BinaryTransformer transformer) {
         return true;
     }
 
     @Override
-    public boolean isValidForRight2Left(final List<Object> right) {
+    public boolean isValidForRight2Left(final List<Object> right, final BinaryTransformer transformer) {
         return true;
     }
 

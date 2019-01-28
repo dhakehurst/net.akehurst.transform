@@ -35,9 +35,11 @@ public interface BinaryRule<L, R> {
      *
      * @param left
      *            the left hand side object
+     * @param transformer
+     *            the transformer
      * @return true if the rule is applicable
      */
-    boolean isValidForLeft2Right(L left);
+    boolean isValidForLeft2Right(L left, BinaryTransformer transformer);
 
     /**
      * Indicates that this rule is valid for applying to the right hand side object.
@@ -46,9 +48,11 @@ public interface BinaryRule<L, R> {
      *
      * @param right
      *            the right hand side object
+     * @param transformer
+     *            the transformer
      * @return true if the rule is applicable
      */
-    boolean isValidForRight2Left(R right);
+    boolean isValidForRight2Left(R right, BinaryTransformer transformer);
 
     /**
      * Checks to see if the left and right object are a match. I.e. The result of this method defines whether, according to this rule, the two objects should be

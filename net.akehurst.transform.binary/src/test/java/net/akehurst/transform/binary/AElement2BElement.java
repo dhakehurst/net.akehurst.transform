@@ -29,12 +29,12 @@ public class AElement2BElement implements BinaryRule<AElement, BElement> {
     }
 
     @Override
-    public boolean isValidForLeft2Right(final AElement left) {
+    public boolean isValidForLeft2Right(final AElement left, final BinaryTransformer transformer) {
         return true;
     }
 
     @Override
-    public boolean isValidForRight2Left(final BElement right) {
+    public boolean isValidForRight2Left(final BElement right, final BinaryTransformer transformer) {
         return true;
     }
 
