@@ -18,7 +18,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4'
     }
 }
 apply plugin: 'java'
@@ -29,7 +29,7 @@ apply plugin: 'signing'
 apply plugin: 'com.jfrog.bintray'
 
 group 'net.akehurst.transform'
-archivesBaseName = 'net.akehurst.transform.binary'
+archivesBaseName = 'binary'
 version = '2.3.0'
 
 sourceCompatibility = 1.8
@@ -101,8 +101,8 @@ model {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-        	    groupId "${group}"
-	        	artifactId "${project.name}".replace("${group}.", "")
+            groupId "${group}"
+	        artifactId "${project.name}".replace("${group}.", "")
 			version "${version}"
 			
             from components.java
