@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 
-rootProject.name = file('.').name
 
-include 'transform-simple'
-include 'transform-binary'
+pluginManagement {
+    repositories {
+        mavenLocal {
+            content{
+                includeGroupByRegex("net\\.akehurst.+")
+            }
+        }
+        gradlePluginPortal()
+    }
+}
 
-enableFeaturePreview('GRADLE_METADATA')
+rootProject.name = file(".").name
+
+include("transform-binary")
+include("transform-simple")
