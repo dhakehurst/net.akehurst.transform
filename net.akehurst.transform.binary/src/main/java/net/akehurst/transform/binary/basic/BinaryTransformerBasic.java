@@ -328,6 +328,44 @@ public class BinaryTransformerBasic implements BinaryTransformer {
         }
     }
 
+    public <KEY, LV, RV> void updateAllLeft2Right(final Class<? extends BinaryRule<LV, RV>> ruleClass, final Map<KEY, ? extends LV> leftMap, final Map<KEY, ? extends RV> rightMap) {
+        if (null == leftMap || null == rightMap) {
+            throw new TransformException("Cannot update from or to a null collection", null);
+        }
+        final Map<KEY, RV> newRightMap = new HashMap<>();
+        for (final Map.Entry<KEY, ? extends LV> left : leftMap.entrySet()) {
+            RV right = this.findMatchLeft2Right(ruleClass, left.getValue(), rightMap.values());
+            if (null == right) {
+                right = this.transformLeft2Right(ruleClass, left.getValue());
+            } else {
+                this.updateLeft2Right(ruleClass, left.getValue(), right);
+            }
+            newRightMap.put(left.getKey(),right);
+        }
+
+        // delete those in right that are not mapped from the left
+        final Set<KEY> toDelete = new HashSet<>();
+        for (final Map.Entry<KEY, ? extends RV> oldRight : rightMap.entrySet()) {
+            if (newRightMap.containsKey(oldRight.getKey())) {
+                // ok
+            } else {
+                toDelete.add(oldRight.getKey());
+            }
+        }
+        toDelete.forEach(it -> rightMap.remove(it));
+        // add new right things mapped from the left
+        // some implementations of Set.addAll (datanucleus JoinSetStore) are not correct
+        // i.e. it adds the element even if it exists
+        // ((Set<R>) rightSet).addAll(newRightSet);
+        for (final Map.Entry<KEY, ? extends RV> right : newRightMap.entrySet()) {
+            if (rightMap.containsKey(right.getKey())) {
+                // do nothing
+            } else {
+                ((Map<KEY,RV>)rightMap).put(right.getKey(), right.getValue());
+            }
+        }
+    }
+
     private <L, R> R findMatchLeft2Right(final Class<? extends BinaryRule<L, R>> ruleClass, final L left, final Collection<? extends R> rightList) {
         for (final R right : rightList) {
             if (this.isAMatch(ruleClass, left, right)) {
@@ -508,6 +546,7 @@ public class BinaryTransformerBasic implements BinaryTransformer {
             }
         }
         leftSet.removeAll(toDelete);
+
         // add new left things mapped from the right
         // some implementations of Set.addAll (datanucleus JoinSetStore) are not correct
         // i.e. it adds the element even if it exists
@@ -517,6 +556,45 @@ public class BinaryTransformerBasic implements BinaryTransformer {
                 // do nothing
             } else {
                 ((Set<L>) leftSet).add(left);
+            }
+        }
+    }
+
+    public <KEY, LV, RV> void updateAllRight2Left(final Class<? extends BinaryRule<LV, RV>> ruleClass, final Map<KEY, ? extends LV> leftMap, final Map<KEY, ? extends RV> rightMap) {
+        if (null == leftMap || null == rightMap) {
+            throw new TransformException("Cannot update from or to a null collection", null);
+        }
+        final Map<KEY, LV> newLeftMap = new HashMap<>();
+        for (final Map.Entry<KEY, ? extends RV> right : rightMap.entrySet()) {
+            LV left = this.findMatchRight2Left(ruleClass, right.getValue(), leftMap.values());
+            if (null == left) {
+                left = this.transformRight2Left(ruleClass, right.getValue());
+            } else {
+                this.updateRight2Left(ruleClass, left, right.getValue());
+            }
+            newLeftMap.put(right.getKey(),left);
+        }
+
+        // delete those in left that are not mapped from the right
+        final Set<KEY> toDelete = new HashSet<>();
+        for (final Map.Entry<KEY, ? extends LV> oldLeft : leftMap.entrySet()) {
+            if (newLeftMap.containsKey(oldLeft.getKey())) {
+                // ok
+            } else {
+                toDelete.add(oldLeft.getKey());
+            }
+        }
+        toDelete.forEach(it -> leftMap.remove(it));
+
+        // add new left things mapped from the right
+        // some implementations of Set.addAll (datanucleus JoinSetStore) are not correct
+        // i.e. it adds the element even if it exists
+        // ((Set<L>) leftSet).addAll(newLeftSet);
+        for (final Map.Entry<KEY, ? extends LV> left : newLeftMap.entrySet()) {
+            if (leftMap.containsKey(left.getKey())) {
+                // do nothing
+            } else {
+                ((Map<KEY,LV>)leftMap).put(left.getKey(), left.getValue());
             }
         }
     }

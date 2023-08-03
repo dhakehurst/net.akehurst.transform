@@ -40,7 +40,7 @@ class BinaryTransformerAbstract : BinaryTransformer {
             if (it.reflect().isAbstract) {
                 null
             } else {
-                val instance = it.reflect().createInstance()
+                val instance = it.reflect().construct()
                 if (ruleType.isInstance(instance)) {
                     instance as BinaryRule<L, R>
                 } else {
